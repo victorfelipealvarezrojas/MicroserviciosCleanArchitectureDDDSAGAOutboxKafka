@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+      Distintos modulos que contiene
+    -->
+    <modules>
+        <module>order-service</module>
+        <module>common</module>
+    </modules>
+
+    <!--
+        Usaré spring boot para los microservices
+     -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.1</version>
+        <relativePath/> <!--Esta ruta relativa se utiliza para buscar en el sistema de archivos local el proyecto maven principal
+                            Pero como tenemos un proyecto padre externo que es spring boot, no necesitamos buscar un archivo local.
+                            El pom padre se cargará desde la biblioteca de arranque spring.-->
+    </parent>
+
+    <groupId>com.food.ordering.system</groupId>
+    <artifactId>food-ordering-system</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!--
+        Usaré la propiedad packaging para establecer este tipo de proyecto como pom.
+        (pom o jar) y en este caso es un proyecto que contandra los distintos modulos
+        y no tendra codigo fuente Así que lo establecí como Pom aquí, y lo convierto
+        en el archivo xml pom padre para los servicios y módulos secundarios
+     -->
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Para mantener las versiones en un solo lugar -->
+        <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
+        <!--
+        las asigno desde plugins
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        -->
+    </properties>
+
+    <!-- administracion de dep. generales para modulos hijos -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-domain-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-application-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- NO SERA USADO POR OTROS MODULOS solo tendra las dep de los otros modulos
+                 para crear el JAR ejecutable y ejecutarlo como microservice
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-container</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            -->
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-dataaccess</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>order-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>common-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!--
+                    esta etiqueta de lanzamiento establecerá la misma versión de Java para el origen y el destino,
+                    por lo que no necesitamos las propiedades para el compilador maven, que proviene automáticamente de IntelliJ
+                        <properties>
+                            <maven.compiler.source>11</maven.compiler.source>
+                            <maven.compiler.target>11</maven.compiler.target>
+                        </properties>
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
